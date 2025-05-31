@@ -186,15 +186,13 @@ SuperLearner <- R6::R6Class("Superlearner",
       return(final_pred)
     },
 
-    #' @description Computes the full stack of functions to learn the meta-learner and prints
-    #' the glm output for the meta-learner.
+    #' @description Computes the full stack of functions to learn the meta-learner.
     #'
     #' @param V Number of folds for cross-validation, default is 10
     learn = function(V = 10) {
       self$fit_learners()
       results <- self$cross_validate(V)
       self$fit_meta_learner(results)
-      print(self$meta_learner)
     }
   )
 )
