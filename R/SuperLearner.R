@@ -1,4 +1,3 @@
-
 # ---- SuperLearner R6 Class ----
 
 #' SuperLearner
@@ -13,25 +12,24 @@
 #' @field fits Fitted base learners.
 #' @field meta_learner The meta_learner learned using cross-validation.
 #' @export
-
 SuperLearner <- R6::R6Class("Superlearner",
   public = list(
     learner_library = list(
       glmnet = list(
         name = "glmnet",
-        fit = function(X, Y) cv.glmnet(x = X, y = Y, family = binomial()),
+        fit = function(X, Y) glmnet::cv.glmnet(x = X, y = Y, family = binomial()),
         predict = function(model, X) predict(model, newx = X, s = "lambda.min", type = "response"),
         x_type = "matrix"
       ),
       randomForest = list(
         name = "randomForest",
-        fit = function(X, Y) randomForest(as.factor(Y) ~ ., data = cbind(X, Y), ntree = 100),
+        fit = function(X, Y) randomForest::randomForest(as.factor(Y) ~ ., data = cbind(X, Y), ntree = 100),
         predict = function(model, X) predict(model, X, type = "prob")[, 2],
         x_type = "data.frame"
       ),
       earth = list(
         name = "earth",
-        fit = function(X, Y) earth(Y ~ ., data = cbind(X, Y), glm = list(family = binomial)),
+        fit = function(X, Y) earth::earth(Y ~ ., data = cbind(X, Y), glm = list(family = binomial)),
         predict = function(model, X) predict(model, X, type = "response"),
         x_type = "data.frame"
       ),
@@ -49,9 +47,7 @@ SuperLearner <- R6::R6Class("Superlearner",
     meta_learner = NULL,
 
 
-    #' Initialize
-    #'
-    #' Initializes the SuperLearner.
+    #' @description Initializes the SuperLearner.
     #'
     #' @param X Dataframe or matrix of predictors.
     #' @param Y Vector of outcomes.
@@ -70,9 +66,7 @@ SuperLearner <- R6::R6Class("Superlearner",
       }
     },
 
-    #' add_learner
-    #'
-    #' Manually adds base learners to SuperLearner object.
+    #' @description Manually adds base learners to SuperLearner object.
     #'
     #' @param name Name of the base learner.
     #' @param fit_fun The fit function of the base learner.
@@ -87,9 +81,7 @@ SuperLearner <- R6::R6Class("Superlearner",
       )
     },
 
-    #' fit_learners
-    #'
-    #' Fits all base learners using their corresponding fit function.
+    #' @description Fits all base learners using their corresponding fit function.
     fit_learners = function() {
       for (name in names(self$learners)) {
         learner <- self$learners[[name]]
@@ -107,9 +99,7 @@ SuperLearner <- R6::R6Class("Superlearner",
       }
     },
 
-    #' cross_validate
-    #'
-    #' Perform cross-validation using all base learners.
+    #' @description Perform cross-validation using all base learners.
     #'
     #' @param V Number of folds for the cross-validation, default is 10.
     #' @return A matrix with n rows and one column per base learner. Each entry
@@ -121,7 +111,7 @@ SuperLearner <- R6::R6Class("Superlearner",
       colnames(results_matrix) <- names(self$learners)
 
       ## Progress bar
-      pb <- progress_bar$new(
+      pb <- progress::progress_bar$new(
         format = "  Cross-validating [:bar] :percent eta: :eta",
         total = V * length(self$learners), clear = FALSE, width = 100
       )
@@ -157,9 +147,7 @@ SuperLearner <- R6::R6Class("Superlearner",
       return(results_matrix)
     },
 
-    #' fit_meta_learner
-    #'
-    #' Fits the meta learner using glm (minimizes CV-MSE).
+    #' @description Fits the meta learner using glm (minimizes CV-MSE).
     #'
     #' @param results_matrix The resulting matrix from the cross_validate function.
     fit_meta_learner = function(results_matrix) {
@@ -169,9 +157,7 @@ SuperLearner <- R6::R6Class("Superlearner",
     },
 
 
-    #' predict
-    #'
-    #' Computes prediction on predictors using the meta-learner.
+    #' @description Computes prediction on predictors using the meta-learner.
     #'
     #' @param X A dataframe or matrix of predictors.
     #' @return A vector of predictions
@@ -200,9 +186,7 @@ SuperLearner <- R6::R6Class("Superlearner",
       return(final_pred)
     },
 
-    #' learn
-    #'
-    #' Computes the full stack of functions to learn the meta-learner and prints
+    #' @description Computes the full stack of functions to learn the meta-learner and prints
     #' the glm output for the meta-learner.
     #'
     #' @param V Number of folds for cross-validation, default is 10

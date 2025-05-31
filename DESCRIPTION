@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Hani", "Zaki", , "hani.zaki@umontreal.ca", role = c("aut", "cre"))
 Description: simple tmle implementation for ATE estimand.
-License: `use_mit_license()`
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
@@ -14,3 +14,4 @@ Imports:
   earth,
   R6,
   progress,
+  dplyr
