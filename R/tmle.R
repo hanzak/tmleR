@@ -80,7 +80,7 @@ TMLE <- R6::R6Class("TMLE",
       H_A <- dplyr::case_when(A == 1 ~ H_1, A == 0 ~ H_0)
 
       ## Construct full_tibble
-      self$full_tibble <- tibble(Y = self$Y) |>
+      self$full_tibble <- tibble::tibble(Y = self$Y) |>
         dplyr::mutate(
           W = W,
           A = A,
