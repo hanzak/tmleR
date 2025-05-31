@@ -13,7 +13,7 @@ You can install the development version of tmleR like so:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("jennybc/regexcite")
+devtools::install_github("hanzak/regexcite")
 ```
 
 
