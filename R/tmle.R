@@ -68,8 +68,8 @@ TMLE <- R6::R6Class("TMLE",
       Q_0 <- pmax(1e-4, pmin(1 - 1e-4, Q_0))
 
       ## Predict propensity score and get clever covariate terms
-      W <- self$W_A |> dplyr::select(!A)
-      A <- self$W_A |> dplyr::pull(A)
+      W <- self$W_A |> dplyr::select(-dplyr::all_of(self$treatment_name))
+      A <- self$W_A |> dplyr::pull(dplyr::all_of(self$treatment_name))
       g_W <- as.vector(self$propensity_superLearner$predict(W))
       H_1 <- 1 / g_W
       H_0 <- -1 / (1 - g_W)
